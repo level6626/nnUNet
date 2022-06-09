@@ -12,10 +12,10 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import pdb
 
 from collections import OrderedDict
 from typing import Tuple
-import pdb
 
 import numpy as np
 import torch
@@ -37,7 +37,7 @@ from nnunet.training.learning_rate.poly_lr import poly_lr
 from batchgenerators.utilities.file_and_folder_operations import *
 
 
-class nnUNetTrainerV2(nnUNetTrainer):
+class nnUNetTrainerV2_500(nnUNetTrainer):
     """
     Info for Fabian: same as internal nnUNetTrainerV2_2
     """
@@ -230,6 +230,7 @@ class nnUNetTrainerV2(nnUNetTrainer):
         :param run_online_evaluation:
         :return:
         """
+        ## pdb.set_trace()
         data_dict = next(data_generator)
         data = data_dict['data']
         target = data_dict['target']
@@ -327,8 +328,6 @@ class nnUNetTrainerV2(nnUNetTrainer):
                 val_keys = [keys[i] for i in idx_val]
                 self.print_to_log_file("This random 80:20 split has %d training and %d validation cases."
                                        % (len(tr_keys), len(val_keys)))
-        
-        # pdb.set_trace()
 
         tr_keys.sort()
         val_keys.sort()

@@ -12,6 +12,9 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import pdb
+import pickle
+
 import SimpleITK as sitk
 import numpy as np
 import shutil
@@ -162,6 +165,13 @@ class ImageCropper(object):
                         or not os.path.isfile(os.path.join(self.output_folder, "%s.pkl" % case_identifier))):
 
                 data, seg, properties = self.crop_from_list_of_files(case[:-1], case[-1])
+
+                # with open("/root/autodl-tmp/cropping.data.pkl", "wb") as f:
+                #     pickle.dump(data, f)
+                # with open("/root/autodl-tmp/cropping.seg.pkl", "wb") as f:
+                #     pickle.dump(seg, f)
+                
+                # pdb.set_trace()
 
                 all_data = np.vstack((data, seg))
                 np.savez_compressed(os.path.join(self.output_folder, "%s.npz" % case_identifier), data=all_data)

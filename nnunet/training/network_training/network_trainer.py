@@ -15,6 +15,7 @@
 
 from _warnings import warn
 from typing import Tuple
+import pdb
 
 import matplotlib
 from batchgenerators.utilities.file_and_folder_operations import *
@@ -415,6 +416,8 @@ class NetworkTrainer(object):
         if not torch.cuda.is_available():
             self.print_to_log_file("WARNING!!! You are attempting to run training on a CPU (torch.cuda.is_available() is False). This can be VERY slow!")
 
+        # pdb.set_trace()
+        
         _ = self.tr_gen.next()
         _ = self.val_gen.next()
 

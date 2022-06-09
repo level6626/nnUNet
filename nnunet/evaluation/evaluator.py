@@ -51,10 +51,10 @@ class Evaluator:
     ]
 
     default_advanced_metrics = [
-        #"Hausdorff Distance",
+        "Hausdorff Distance",
         "Hausdorff Distance 95",
-        #"Avg. Surface Distance",
-        #"Avg. Symmetric Surface Distance"
+        "Avg. Surface Distance",
+        "Avg. Symmetric Surface Distance"
     ]
 
     def __init__(self,
@@ -149,7 +149,7 @@ class Evaluator:
         if metric not in self.metrics:
             self.metrics.append(metric)
 
-    def evaluate(self, test=None, reference=None, advanced=False, **metric_kwargs):
+    def evaluate(self, test=None, reference=None, advanced=True, **metric_kwargs):
         """Compute metrics for segmentations."""
         if test is not None:
             self.set_test(test)
@@ -187,6 +187,7 @@ class Evaluator:
 
         eval_metrics = self.metrics
         if advanced:
+
             eval_metrics += self.advanced_metrics
 
         if isinstance(self.labels, dict):

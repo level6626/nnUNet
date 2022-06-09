@@ -12,6 +12,8 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import pdb
+
 import numpy as np
 from batchgenerators.transforms.abstract_transforms import AbstractTransform
 
@@ -51,6 +53,8 @@ class MaskTransform(AbstractTransform):
         for b in range(data.shape[0]):
             mask = seg[b, self.mask_idx_in_seg]
             for c in range(data.shape[1]):
+                # print(data.shape)
+                # pdb.set_trace()
                 if self.dct_for_where_it_was_used[c]:
                     data[b, c][mask < 0] = self.set_outside_to
         data_dict[self.data_key] = data

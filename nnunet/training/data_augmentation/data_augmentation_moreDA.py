@@ -12,6 +12,8 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import pdb
+
 from batchgenerators.dataloading.multi_threaded_augmenter import MultiThreadedAugmenter
 from batchgenerators.transforms.abstract_transforms import Compose
 from batchgenerators.transforms.channel_selection_transforms import DataChannelSelectionTransform, \
@@ -37,13 +39,19 @@ try:
 except ImportError as ie:
     NonDetMultiThreadedAugmenter = None
 
+class test:
+    def __call__(self, **data_dict):
+        print(data_dict["keys"])
+        return data_dict
+
 
 def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params=default_3D_augmentation_params,
                             border_val_seg=-1,
                             seeds_train=None, seeds_val=None, order_seg=1, order_data=3, deep_supervision_scales=None,
                             soft_ds=False,
                             classes=None, pin_memory=True, regions=None,
-                            use_nondetMultiThreadedAugmenter: bool = False):
+                            use_nondetMultiThreadedAugmenter: bool = False,
+                            dist_map_mode: bool=False):
     assert params.get('mirror') is None, "old version of params, use new keyword do_mirror"
 
     tr_transforms = []
@@ -74,8 +82,11 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
         border_mode_seg="constant", border_cval_seg=border_val_seg,
         order_seg=order_seg, random_crop=params.get("random_crop"), p_el_per_sample=params.get("p_eldef"),
         p_scale_per_sample=params.get("p_scale"), p_rot_per_sample=params.get("p_rot"),
-        independent_scale_for_each_axis=params.get("independent_scale_factor_for_each_axis")
+        independent_scale_for_each_axis=params.get("independent_scale_factor_for_each_axis"),
+        dist_map_mode=dist_map_mode
     ))
+
+    # tr_transforms.append(test())
 
     if params.get("dummy_2D"):
         tr_transforms.append(Convert2DTo3DTransform())
@@ -136,6 +147,8 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
                         fill_with_other_class_p=params.get("cascade_remove_conn_comp_max_size_percent_threshold"),
                         dont_do_if_covers_more_than_X_percent=params.get(
                             "cascade_remove_conn_comp_fill_with_other_class_p")))
+
+    # tr_transforms.append(test())
 
     tr_transforms.append(RenameTransform('seg', 'target', True))
 
