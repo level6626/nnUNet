@@ -46,7 +46,7 @@ class nnUNetTrainerV2_500(nnUNetTrainer):
                  unpack_data=True, deterministic=True, fp16=False):
         super().__init__(plans_file, fold, output_folder, dataset_directory, batch_dice, stage, unpack_data,
                          deterministic, fp16)
-        self.max_num_epochs = 1000
+        self.max_num_epochs = 130
         self.initial_lr = 1e-2
         self.deep_supervision_scales = None
         self.ds_loss_weights = None
@@ -232,6 +232,8 @@ class nnUNetTrainerV2_500(nnUNetTrainer):
         """
         ## pdb.set_trace()
         data_dict = next(data_generator)
+        # pdb.set_trace()
+        
         data = data_dict['data']
         target = data_dict['target']
 

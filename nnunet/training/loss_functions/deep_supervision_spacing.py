@@ -16,7 +16,7 @@
 from torch import nn
 
 
-class MultipleOutputLoss2Spacing(nn.Module):
+class MultipleOutputLoss2decay(nn.Module):
     def __init__(self, loss, weight_factors=None):
         """
         use this if you have several outputs and ground truth (both list of same len) and the loss should be computed
@@ -24,11 +24,11 @@ class MultipleOutputLoss2Spacing(nn.Module):
         :param loss:
         :param weight_factors:
         """
-        super(MultipleOutputLoss2, self).__init__()
+        super(MultipleOutputLoss2decay, self).__init__()
         self.weight_factors = weight_factors
         self.loss = loss
 
-    def forward(self, x, y, spacing):
+    def forward(self, x, y, alpha):
         assert isinstance(x, (tuple, list)), "x must be either tuple or list"
         assert isinstance(y, (tuple, list)), "y must be either tuple or list"
         if self.weight_factors is None:
@@ -36,8 +36,8 @@ class MultipleOutputLoss2Spacing(nn.Module):
         else:
             weights = self.weight_factors
 
-        l = weights[0] * self.loss(x[0], y[0], spacing)
+        l = weights[0] * self.loss(x[0], y[0], alpha)
         for i in range(1, len(x)):
             if weights[i] != 0:
-                l += weights[i] * self.loss(x[i], y[i], spacing)
+                l += weights[i] * self.loss(x[i], y[i], alpha)
         return l

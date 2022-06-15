@@ -12,6 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
+import pdb
 
 import argparse
 from copy import deepcopy
@@ -210,6 +211,9 @@ def predict_cases(model, list_of_lists, output_filenames, folds, save_npz, num_t
             data = np.load(d)
             os.remove(d)
             d = data
+
+        # pdb.set_trace()
+        # np.save(output_filename.split(".")[0]+".npy", d)
 
         print("predicting", output_filename)
         trainer.load_checkpoint_ram(params[0], False)

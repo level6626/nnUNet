@@ -124,7 +124,8 @@ def save_segmentation_nifti_from_softmax(segmentation_softmax: Union[str, np.nda
     else:
         seg_old_spacing_final = np.zeros(seg_old_spacing.shape[1:])
         for i, c in enumerate(region_class_order):
-            seg_old_spacing_final[seg_old_spacing[i] > 0.5] = c
+            ## thresholding for val 7
+            seg_old_spacing_final[seg_old_spacing[i] > 0.01] = c
         seg_old_spacing = seg_old_spacing_final
 
     bbox = properties_dict.get('crop_bbox')

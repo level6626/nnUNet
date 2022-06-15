@@ -734,7 +734,7 @@ class DC_CE_BIoU_loss(DC_and_CE_loss):
             mask = mask.float()
         else:
             mask = None
-        
+
         bl_loss = self.bl(net_output, target, loss_mask=mask) if self.weight_BIoU != 0 else 0
 
         dc_loss = self.dc(net_output, target, loss_mask=mask) if self.weight_dice != 0 else 0
@@ -798,6 +798,42 @@ class GDL_and_CE_loss(nn.Module):
             raise NotImplementedError("nah son") # reserved for other stuff (later)
         return result
 
+class GDL_and_boundary_loss(nn.Module):
+    def __init__(self, gdl_dice_kwargs, ce_kwargs, aggregate="sum", ignore_label=None):
+        super(GDL_and_boundary_loss, self).__init__()
+        self.aggregate = aggregate
+        self.ignore_label = ignore_label
+        self.sl = SurfaceLoss(apply_nonlin=softmax_helper)
+        self.dc = GDL(softmax_helper, **gdl_dice_kwargs)
+
+    def forward(self, net_output, target, alpha: int=0.99):
+        """
+        target must be b, c, x, y(, z) with c=2 (seg, dist_map)
+        :param net_output:
+        :param target:
+        :return:
+        """
+        if self.ignore_label is not None:
+            assert target.shape[1] == 1, 'not implemented for one hot encoding'
+            mask = target != self.ignore_label
+            target[~mask] = 0
+            mask = mask.float()
+        else:
+            mask = None
+        
+        # pdb.set_trace()
+
+        sl_loss = self.sl(net_output, target[:, [1]], loss_mask=mask)
+        dc_loss = self.dc(net_output, target[:, [0]], loss_mask=mask)
+        # print("sl: %f" % sl_loss)
+        # print("dc: %f" % dc_loss)
+        # pdb.set_trace()
+
+        if self.aggregate == "sum":
+            result = alpha * dc_loss + (1 - alpha) * sl_loss
+        else:
+            raise NotImplementedError("nah son") # reserved for other stuff (later)
+        return result
 
 class DC_and_topk_loss(nn.Module):
     def __init__(self, soft_dice_kwargs, ce_kwargs, aggregate="sum", square_dice=False):
