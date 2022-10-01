@@ -845,11 +845,17 @@ class DC_and_topk_loss(nn.Module):
         else:
             self.dc = SoftDiceLossSquared(apply_nonlin=softmax_helper, **soft_dice_kwargs)
 
-    def forward(self, net_output, target):
+    def forward(self, net_output, target, mask = False):
         dc_loss = self.dc(net_output, target)
-        ce_loss = self.ce(net_output, target)
+        if (mask):
+            ce_loss, topk_mask = self.ce(net_output, target, mask)
+        else:
+            ce_loss = self.ce(net_output, target, mask)
         if self.aggregate == "sum":
             result = ce_loss + dc_loss
         else:
             raise NotImplementedError("nah son") # reserved for other stuff (later?)
-        return result
+        if (mask):
+            return (result, topk_mask)
+        else:
+            return result

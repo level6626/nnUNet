@@ -36,11 +36,12 @@ class MultipleOutputLoss2(nn.Module):
         else:
             weights = self.weight_factors
 
-        l = weights[0] * self.loss(x[0], y[0])
+        raw_loss, topk_mask = self.loss(x[0], y[0], True)
+        l = weights[0] * raw_loss
         for i in range(1, len(x)):
             if weights[i] != 0:
-                l += weights[i] * self.loss(x[i], y[i])
-        return l
+                l += weights[i] * self.loss(x[i], y[i], False)
+        return (l, topk_mask)
 
 class MultipleOutputLoss2decay(nn.Module):
     def __init__(self, loss, weight_factors=None):

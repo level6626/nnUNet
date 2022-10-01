@@ -51,7 +51,7 @@ class nnUNetTrainerV2_boundary(nnUNetTrainerV2):
         self.loss = DC_CE_Boundary_loss({'batch_dice': self.batch_dice, 'smooth': 1e-5, 'do_bg': False}, {})
         ## change max_num epochs to 500 for cavity
         ## change max_num_epochs to 200 for scar
-        self.max_num_epochs = 200
+        self.max_num_epochs = 500
         self.initial_lr = 1e-2
         self.deep_supervision_scales = None
         self.ds_loss_weights = None
